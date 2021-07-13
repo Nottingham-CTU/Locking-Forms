@@ -1,0 +1,63 @@
+{
+	"name" : "Locking",
+	"namespace" : "Nottingham\\Locking",
+	"description" : "locking forms when saved as completed.",
+	"authors": [
+		{
+			"name": "Nina Clayton",
+			"email": "nina.clayton@nottingham.ac.uk",
+			"institution": "University of Nottingham"
+		}
+	],
+	"permissions" : [
+		"redcap_save_record",
+                "redcap_data_entry_form_top",
+                "redcap_data_entry_form"
+		
+	],
+	"framework-version" : 3,
+	"compatibility" : { "redcap-version-min" : "9.6.5" },
+	"project-settings" : [
+        {
+                "key" : "form-setting",
+                "name" : "Define Settings for Locking Instruments when saving a form with completed status",
+                "type" : "sub_settings",
+                "repeatable" : true,
+                "sub_settings" : [
+                     
+						{
+								 "key" : "form-event-name",
+								 "name" : "Event name of saved instrument",
+								 "type" : "event-list",
+								 "required" : true
+						},
+						{
+								 "key" : "form-name",
+								 "name" : "Saved instrument",
+								 "type" : "form-list",
+								 "required" : true
+						 },
+                        {
+                                "key" : "locking-params",
+                                "name" : "Forms to lock when instrument is saved ",
+                                "type" : "sub_settings",
+                                "repeatable" : true,
+                                "sub_settings" : [
+                                    {
+                                         "key" : "lock-form-event-name",
+                                         "name" : "Event Name ",
+                                         "type" : "event-list",
+                                         "required" : true
+                                     },
+                                     {
+                                             "key" : "lock-form-name",
+                                             "name" : "Instrument",
+                                             "type" : "form-list",
+                                             "required" : true
+                                     }
+                                ]
+                        }    
+                ]
+        }
+     ]
+}

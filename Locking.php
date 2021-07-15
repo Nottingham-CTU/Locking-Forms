@@ -22,11 +22,12 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         $form_events = $this->getProjectSetting('form-event-name', $project_id);
         $forms = $this->getProjectSetting('form-name', $project_id);
         global $Proj;
+        
+        
 
         // Get all configured instrument that have locking requests when form is saved
         for ($i = 0; $i < count($form_events); $i++)
         {
-            
              if ($form_events[$i] === $event_id && $forms[$i] === $instrument) {
 
                
@@ -34,10 +35,23 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                 
                 $repeat_instrument = $Proj->isRepeatingForm($event_id, $instrument) ? $instrument : "";
                 $dq = new \DataQuality();
-                list ($dq_errors, $dq_errors_excluded) = $dq->checkViolationsSingleRecord($record, $event_id, $instrument, array(), $repeat_instance, $repeat_instrument);
+                  list ($dq_errors, $dq_errors_excluded) = $dq->checkViolationsSingleRecord($record, $event_id, $instrument, array(), $repeat_instance, $repeat_instrument);
 
+                // normalise data if repeating instrument
+                  foreach ($data as $record => $event_data) {
+                        foreach ($event_data as $this_event_id => $field_data) {
+                            if ($this_event_id == 'repeat_instances') {
+                                $eventNormalized = $event_data['repeat_instances'];
+                            } else {
+                                $eventNormalized = array();
+                                $eventNormalized[$this_event_id][""][1] = $event_data[$this_event_id];
+                            } 
+                        }
+                  }
+          
                 // Check that the submitted form is complete (<instrument_name>_complete == 2) and there are no data quality errors 
-                if($data[$record][$event_id][$instrument . '_complete'] == '2')
+                 
+                if($eventNormalized[$event_id][$repeat_instrument][$repeat_instance][$instrument . '_complete'] == '2')
                 {
                     if(empty($dq_errors))
                     {

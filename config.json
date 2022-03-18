@@ -1,7 +1,7 @@
 {
 	"name" : "Locking",
 	"namespace" : "Nottingham\\Locking",
-	"description" : "locking forms when saved as completed.",
+	"description" : "soft locking forms when saved as completed. Also performs hard locking (participant, intermediate and  full database locks)",
 	"authors": [
 		{
 			"name": "Nina Clayton",
@@ -11,53 +11,142 @@
 	],
 	"permissions" : [
 		"redcap_save_record",
-                "redcap_data_entry_form_top",
-                "redcap_data_entry_form"
+                "redcap_data_entry_form",
+                "redcap_every_page_top",
+                "redcap_module_save_configuration",
+                "redcap_every_page_before_render",
+		"redcap_survey_page"
+				
 		
 	],
 	"framework-version" : 3,
 	"compatibility" : { "redcap-version-min" : "9.6.5" },
 	"project-settings" : [
+         {
+                "key" : "hard-settings",
+                "name" : "Define Settings for Hard Locking",
+                "repeatable" : false,
+                "type" : "descriptive",
+                "super-users-only" : true
+        },                                      
         {
-                "key" : "form-setting",
-                "name" : "Define Settings for Locking Instruments when saving a form with completed status",
-                "type" : "sub_settings",
+                "key" : "full-lock",
+                "name" : "Full Hard Lock",
+                "type" : "checkbox",
+                "super-users-only" : true
+        },
+        {
+                "key" : "intermediate-lock",
+                "name" : "Settings for Intermediate Hard Locking",
+                "type" : "checkbox",
+                "super-users-only" : true
+        },
+        {
+                "key" : "intermediate-lock-settings",
+                "name" : "Settings for Intermediate Hard Locking",
                 "repeatable" : true,
-                "sub_settings" : [
+                "type" : "sub_settings",
+                "super-users-only" : true,
+                "branchingLogic" : { "field" : "intermediate-lock", "value" : true },
+                "sub_settings" : 
+                [ 
                      
-						{
-								 "key" : "form-event-name",
-								 "name" : "Event name of saved instrument",
-								 "type" : "event-list",
-								 "required" : true
-						},
-						{
-								 "key" : "form-name",
-								 "name" : "Saved instrument",
-								 "type" : "form-list",
-								 "required" : true
-						 },
-                        {
-                                "key" : "locking-params",
-                                "name" : "Forms to lock when instrument is saved ",
-                                "type" : "sub_settings",
-                                "repeatable" : true,
-                                "sub_settings" : [
-                                    {
-                                         "key" : "lock-form-event-name",
-                                         "name" : "Event Name ",
-                                         "type" : "event-list",
-                                         "required" : true
-                                     },
-                                     {
-                                             "key" : "lock-form-name",
-                                             "name" : "Instrument",
-                                             "type" : "form-list",
-                                             "required" : true
-                                     }
+                    {
+                        "key" : "inter-lock-event-name",
+                        "name" : "Event Name to apply intermediate lock",
+                        "type" : "event-list",
+                        "super-users-only" : true,
+                        "required" : true
+                    } ,
+                    {
+                        "key" : "inter-lock-form-name",
+                        "name" : "Form Name EXEMPT from intermediate lock",
+                        "type" : "form-list",
+                        "super-users-only" : true,
+                        "repeatable" : true
+                    }
+                ] 
+        },
+         {
+                "key" : "override",
+                "name" : "Override Hard Lock",
+                "type" : "checkbox",
+                "super-users-only" : true
+        },
+        {
+           "key" : "configure-locking",
+           "name" : "Define Settings for Locking<br> <div class='requiredlabel' aria-label='Question required.'>* if checked, must provide value for locking settings below</div>",
+           "type" : "checkbox"
+        },
+        
+        
+       {
+              "key" : "locking-setting",
+              "name" : "Define Instruments for Locking when saving a form with completed status",
+              "type" : "sub_settings",
+              "repeatable" : true,
+              "sub_settings" : 
+                [
+
+                    {
+                        "key" : "form-event-name",
+                        "name" : "Event name of saved instrument",
+                        "type" : "event-list"
+                    },
+                    {
+                        "key" : "form-name",
+                        "name" : "Saved instrument",
+                        "type" : "form-list" 
+                     },   
+                      {
+                        "key" : "lock-new-instances",
+                        "name" : "Do not allow new instances",
+                        "type" : "checkbox",
+                         "super-users-only" : true
+                     },   
+                     {
+                        "key" : "locking-params",
+                        "name" : "Events to lock when instrument is saved ",
+                        "type" : "sub_settings",
+                        "repeatable" : true,
+                        "sub_settings" : 
+                        [
+                            {
+                                "key" : "lock-form-event-name",
+                                "name" : "Event Name ",
+                                "required" : true,
+                                "branchingLogic" : { "field" : "configure-locking", "value" : true },
+                                "type" : "event-list"
+                             },
+                             {
+                                "key" : "part-config-type",
+                                "name" : "Intrument configuration for locking",
+                                "type" : "radio",
+                                "branchingLogic" : { "field" : "configure-locking", "value" : true },
+                                "choices" : [
+                                        { "value" : 1, "name" : "Define Instruments required for locking<div class='requiredlabel' aria-label='Question required.'>* if selected, must provide value for locking settings below</div></br>" },
+                                        { "value" : 2, "name" : "Define Instruments EXEMPT from locking" }
                                 ]
-                        }    
+                             },
+                             {
+                                "key" : "lock-form-name",
+                                "name" : "Instrument",
+                                "required" : false,
+                                "branchingLogic" : { "field" : "configure-locking", "value" : true },
+                                "repeatable" : true,
+                                "type" : "form-list"
+                             }
+                        ]
+                    }    
                 ]
         }
-     ]
-}
+    ],
+        "crons": [
+            {
+               "cron_name": "violationchecker",
+               "cron_description": "Check for violations (data saved after locking) - cron is called every 4 hours",
+               "method": "violationChecker",
+               "cron_frequency": "14400",
+               "cron_max_run_time": "1800"
+            }]
+}              

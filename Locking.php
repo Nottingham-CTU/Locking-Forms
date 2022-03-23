@@ -52,7 +52,15 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         global $lang;
         addLangToJS(array('data_entry_46', 'data_entry_442', 'data_entry_443'));
       
-        $override_on = $override && $this->framework->getUser()->isSuperUser();
+        $override_on = false;
+        try
+        {
+            $override_on = $override && $this->framework->getUser()->isSuperUser();
+        }
+        catch(Exception $ex)
+        {
+            // username not detected, therefore do not set override
+        }
                     
         if(!$override_on && ($hard_lock || $intermediate_lock))
         {
@@ -443,9 +451,16 @@ class Locking extends \ExternalModules\AbstractExternalModule {
 
         $locked = false;
 
-
-        $override_on = $override && $this->framework->getUser()->isSuperUser();
-
+        $override_on = false;
+        try
+        {
+            $override_on = $override && $this->framework->getUser()->isSuperUser();
+        }
+        catch(Exception $ex)
+        {
+            // username not detected, therefore do not set override
+        }
+      
         if(!$override_on && $hard_lock)
         {
             $locked = true;

@@ -57,7 +57,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             $override_on = $override && $this->framework->getUser()->isSuperUser();
         }
-        catch(Exception $ex)
+        catch(\Exception $ex)
         {
             // username not detected, therefore do not set override
         }
@@ -456,7 +456,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             $override_on = $override && $this->framework->getUser()->isSuperUser();
         }
-        catch(Exception $ex)
+        catch(\Exception $ex)
         {
             // username not detected, therefore do not set override
         }

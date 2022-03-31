@@ -61,13 +61,20 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             // username not detected, therefore do not set override
         }
-                    
+        
+        $lockText = $intermediate_lock && !$hard_lock ? "Intermediate hard lock on" : "Full Hard Lock On";
         if(!$override_on && ($hard_lock || $intermediate_lock))
         {
             echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'removeAddRecord();
+                                           $this->loadFile("LockingButton.js") .'removeAddRecord("'.$lockText.'");
+                                       </script>';   
+        }
+        else if($hard_lock || $intermediate_lock)
+        {
+            $lockText .= " - Override On";
+             echo   '<script type="text/javascript">' . 
+                                           $this->loadFile("LockingButton.js") .'addLockBanner("'.$lockText.'");
                                        </script>';
-                
         }
     }
 
@@ -110,7 +117,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
             $form_events = $this->getProjectSetting('form-event-name', $project_id);
             $forms = $this->getProjectSetting('form-name', $project_id);
             // note readonly field has been removed from configuration as not been implemented in redcap_every_page_before_render or cron job
-            // as following discussions with data management team it was not required therefore would need addining back in condifuration
+            // as following discussions with data management team it was not required therefore would need addining back in configuration
             // and implmenting in redcap_every_page_before_render and cron job if required!
             $readonly = $this->getProjectSetting('readonly', $project_id);
             $lock_instances = $this->getProjectSetting('lock-new-instances', $project_id);

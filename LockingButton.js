@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+var lockinfo;
+
 function removeLockControl()
 {
     removeSaveControl();
@@ -20,9 +22,9 @@ function removeLockControl()
     }  
 }
 
-function removeAddRecord()
+function removeAddRecord(txt)
 {
-   
+    addLockBanner(txt);
     var vListButton = $('button');
     
     for (var i = 0; i < vListButton.length; i++)
@@ -37,6 +39,17 @@ function removeAddRecord()
         }
         
     }  
+}
+
+function addLockBanner(txt)
+{
+    lockinfo = txt;
+    var vHeader = document.getElementById("subheaderDiv2");
+    var vLockBanner = document.createElement( 'div' );
+    vLockBanner.style = 'color:blue;';
+    vLockBanner.innerHTML = txt;
+    vHeader.appendChild( vLockBanner );
+  
 }
 
 function removeSaveControl(locktext = '<b>Data hard locked</b>')
@@ -143,7 +156,8 @@ $(document).ready(function(){
     {
         vButton.remove();
     }
-    removeAddRecord();
+    removeAddRecord(lockinfo);
+    
     
  });
  

@@ -45,10 +45,17 @@ function addLockBanner(txt)
 {
     lockinfo = txt;
     var vHeader = document.getElementById("subheaderDiv2");
-    var vLockBanner = document.createElement( 'div' );
-    vLockBanner.style = 'color:blue;';
-    vLockBanner.innerHTML = txt;
-    vHeader.appendChild( vLockBanner );
+    var vLockBanner = document.getElementById("nctu_locking_banner");
+    if(vLockBanner == null)
+    {
+       
+        vLockBanner = document.createElement( 'div' );
+        vLockBanner.id ="nctu_locking_banner"
+        vLockBanner.style = 'color:blue;';
+        vLockBanner.innerHTML = txt;
+        vHeader.appendChild( vLockBanner );
+    }
+    
   
 }
 
@@ -133,6 +140,17 @@ function removeSaveControl(locktext = '<b>Data hard locked</b>')
         }
        
         
+    }
+    var vListLinks = $('.deletedoc-lnk'); 
+    for (var i = 0; i < vListLinks.length; i++)
+    {
+        vLink = vListLinks[i];
+        
+        if (vLink.innerText.trim() == lang.form_renderer_24)
+        { 
+            removeButton(vLink, false, locktext); 
+ 
+        }
     }
       
 }

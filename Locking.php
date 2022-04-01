@@ -92,7 +92,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
       
         global $Proj;
         global $lang;
-        addLangToJS(array('data_entry_182', 'data_entry_210', 'data_entry_212', 'data_entry_215', 'data_entry_234', 'data_entry_275', 'data_entry_275', 'data_entry_276', 'data_entry_287', 'data_entry_288', 'data_entry_289', 'data_entry_292', 'data_entry_409', 'data_entry_410', 'emlang_minimization_rando'));
+        addLangToJS(array('data_entry_182', 'data_entry_210', 'data_entry_212', 'data_entry_215', 'data_entry_234', 'data_entry_275', 'data_entry_275', 'data_entry_276', 'data_entry_287', 'data_entry_288', 'data_entry_289', 'data_entry_292', 'data_entry_409', 'data_entry_410', 'emlang_minimization_rando', 'form_renderer_24'));
       
         if($locked)
         {
@@ -603,7 +603,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                     $sql = "SELECT DATE_FORMAT(timestamp(log.ts), '%d-%m-%Y %H:%i:%s') as ts, log.ip, log.user, log.event_id, log.pk, log.data_values ".
                              " FROM $logEventTable log ".
                              " WHERE log.project_id = $project_id AND (log.event = 'INSERT' " .
-                             " OR log.event = 'UPDATE' OR log.event='DELETE' ) ".
+                             " OR log.event = 'UPDATE' OR log.event='DELETE' OR log.event='DOC_DELETE') ".
                              " AND log.object_type = 'redcap_data' AND log.ts >= $lasttimeint" .
                              " ORDER BY log.log_event_id";
 

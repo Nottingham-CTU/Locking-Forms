@@ -120,7 +120,7 @@
                              },
                              {
                                 "key" : "part-config-type",
-                                "name" : "Intrument configuration for locking",
+                                "name" : "Instrument configuration for locking",
                                 "type" : "radio",
                                 "branchingLogic" : { "field" : "configure-locking", "value" : true },
                                 "choices" : [

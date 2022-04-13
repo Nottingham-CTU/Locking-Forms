@@ -38,10 +38,10 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         // Stop here if not in a project or not on a data entry page.
         if ( $project_id === null ||
              substr( PAGE_FULL, strlen( APP_PATH_WEBROOT ), 10 ) != 'DataEntry/' )
-        {
+        { 
                 return;
-        }	
-
+        }
+           
         $hard_lock = $this->getProjectSetting('full-lock', $project_id);
         $override = $this->getProjectSetting('override', $project_id);
         $intermediate_lock = $this->getProjectSetting('intermediate-lock', $project_id);
@@ -66,14 +66,14 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         if(!$override_on && ($hard_lock || $intermediate_lock))
         {
             echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'removeAddRecord("'.$lockText.'");
+                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
                                        </script>';   
         }
         else if($hard_lock || $intermediate_lock)
         {
             $lockText .= " - Override On";
              echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'addLockBanner("'.$lockText.'");
+                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
                                        </script>';
         }
     }
@@ -98,16 +98,12 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
             {
-                echo   '<script type="text/javascript">' . 
-                        $this->loadFile("LockingButton.js") .'removeLockControl();
-                         </script>';
+                echo   '<script type="text/javascript">removeLockControl();</script>';
             }
             else
             {
             
-                echo   '<script type="text/javascript">' . 
-                        $this->loadFile("LockingButton.js") .'removeSaveControl();
-                        </script>';              
+                echo   '<script type="text/javascript">removeSaveControl();</script>';              
             }              
         }
        
@@ -165,15 +161,11 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                     { 
                                         if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
                                         {
-                                            echo '<script type="text/javascript">' .
-                                            $this->loadFile("LockingButton.js") .'removeLockControl();
-                                                                                               </script>';
+                                            echo '<script type="text/javascript">removeLockControl();</script>';
                                         }
                                         else
                                         {
-                                            echo '<script type="text/javascript">' .
-                                            $this->loadFile("LockingButton.js") .'removeSaveControl();
-                                                                        </script>';
+                                            echo '<script type="text/javascript">removeSaveControl();</script>';
                                         }
                                     }
                                     else if($lock_instances[$i] && !$this->framework->getUser()->isSuperUser())
@@ -187,9 +179,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                             if((int)$repeat_instance > $instanceMax)
                                             {
                                               
-                                                echo '<script type="text/javascript">' .
-                                                $this->loadFile("LockingButton.js") .'removeSaveControl("New instance cannot be added,<br>please contact administrator.");
-                                                                        </script>';
+                                                echo '<script type="text/javascript">removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
                                             }
                                         }
 
@@ -574,7 +564,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     private function loadFile($filename) {
         $data = "";
         $file = fopen($this->getModulePath() . $filename, "r");
-        if (file) {
+        if ($file) {
             $data = fread($file, filesize($this->getModulePath() . $filename));
             fclose($file);
         }

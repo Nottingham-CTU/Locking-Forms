@@ -4,16 +4,24 @@
  * and open the template in the editor.
  */
 
-var lockinfo;
-
+  // Single global scope object containing all variables/functions
+  var LockInfo = {};
+  LockInfo.setInfoText = function(txt) {
+       LockInfo.textvar = txt;
+  };
+ 
+  LockInfo.getInfoText = function() {
+     return this.textvar;
+  };
+ 
 function removeLockControl()
 {
     removeSaveControl();
-    var vListButton = $('input[type=button]');
+    var vListButton = $('input[type=button],button');
     for (var i = 0; i < vListButton.length; i++)
     {
         vLockBtn = vListButton[i];
-        if (vLockBtn.value == lang.data_entry_182)
+        if (vLockBtn.value == lang.data_entry_182 || vLockBtn.innerText.trim() == lang.data_entry_182)
         { 
             $('<i><b><br> Data hard locked</b></i>').insertBefore(vLockBtn);
               vLockBtn.remove();
@@ -22,9 +30,8 @@ function removeLockControl()
     }  
 }
 
-function removeAddRecord(txt)
+function removeAddRecord()
 {
-    addLockBanner(txt);
     var vListButton = $('button');
     
     for (var i = 0; i < vListButton.length; i++)
@@ -41,9 +48,8 @@ function removeAddRecord(txt)
     }  
 }
 
-function addLockBanner(txt)
-{
-    lockinfo = txt;
+function addLockBanner()
+{  
     var vHeader = document.getElementById("subheaderDiv2");
     var vLockBanner = document.getElementById("nctu_locking_banner");
     if(vLockBanner == null)
@@ -52,7 +58,7 @@ function addLockBanner(txt)
         vLockBanner = document.createElement( 'div' );
         vLockBanner.id ="nctu_locking_banner"
         vLockBanner.style = 'color:blue;';
-        vLockBanner.innerHTML = txt;
+        vLockBanner.innerHTML = LockInfo.getInfoText();
         vHeader.appendChild( vLockBanner );
     }
     
@@ -174,7 +180,8 @@ $(document).ready(function(){
     {
         vButton.remove();
     }
-    removeAddRecord(lockinfo);
+    removeAddRecord();
+    addLockBanner();
     
     
  });

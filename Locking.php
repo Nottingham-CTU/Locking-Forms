@@ -119,75 +119,81 @@ class Locking extends \ExternalModules\AbstractExternalModule {
             $lock_instances = $this->getProjectSetting('lock-new-instances', $project_id);
           
             // Get all configured instrument that have locking requests when form is saved
-            for ($i = 0; $i < count($form_events); $i++)
+            if($form_events !== null)
             {
-               
-                $lock_form_events = $this->getProjectSetting('lock-form-event-name', $project_id);
-                $lock_forms = $this->getProjectSetting('lock-form-name', $project_id);
-                $lock_form_type = $this->getProjectSetting('part-config-type', $project_id);
-
-                // lock all the forms that requested to lock
-                for ($lock = 0; $lock < count($lock_form_events[$i]); $lock++)
+                for ($i = 0; $i < count($form_events); $i++)
                 {
-                   if ($lock_form_events[$i][$lock]=== $event_id)
-                   {
 
-                        $lock_form = false;
-                        if($lock_form_type[$i][$lock] === "2")
+                    $lock_form_events = $this->getProjectSetting('lock-form-event-name', $project_id);
+                    $lock_forms = $this->getProjectSetting('lock-form-name', $project_id);
+                    $lock_form_type = $this->getProjectSetting('part-config-type', $project_id);
+
+                    // lock all the forms that requested to lock
+                    if($lock_form_events !== null)
+                    {
+                        for ($lock = 0; $lock < count($lock_form_events[$i]); $lock++)
                         {
-                             $lock_form = true;
+                           if ($lock_form_events[$i][$lock]=== $event_id)
+                           {
 
-                        }
+                                $lock_form = false;
+                                if($lock_form_type[$i][$lock] === "2")
+                                {
+                                     $lock_form = true;
 
-
-                        for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
-                        {
-                            if($lock_forms[$i][$lock][$k] === $instrument)
-                            {
-                                $lock_form = !$lock_form;
-                                break;
-                            }
-                        }
+                                }
 
 
-                        //  $this->alert("search through forms" . $event_id .' '. $instrument. ' locking event='. $lock_form_events[$i][$lock]. ' form='.$lock_forms[$i][$lock]);
-                          if ($lock_form) {
-                              
-                              $isParentRepeating = $Proj->isRepeatingForm($form_events[$i], $forms[$i]) || $Proj->isRepeatingEvent($form_events[$i]) ;
-                              // form is locked and parent form is locked, and should be readonly therefore remove the lock button  
-                              if($this->isFormLocked($project_id, $record, $form_events[$i], $forms[$i], $repeat_instance, $isParentRepeating))
-                              {     
-                                    if($readonly[$i])
-                                    { 
-                                        if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
-                                        {
-                                            echo '<script type="text/javascript">removeLockControl();</script>';
-                                        }
-                                        else
-                                        {
-                                            echo '<script type="text/javascript">removeSaveControl();</script>';
-                                        }
-                                    }
-                                    else if($lock_instances[$i] && !$this->framework->getUser()->isSuperUser())
+                                for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
+                                {
+                                    if($lock_forms[$i][$lock][$k] === $instrument)
                                     {
-                                        $isRepeating = $Proj->isRepeatingForm($event_id, $instrument) || $Proj->isRepeatingEvent($event_id) ;
-
-                                        // if repeating event or repeating form, then make sure and not super user, make sure a new instance cannot be added
-                                        if($isRepeating)
-                                        {
-                                            list ($instanceTotal, $instanceMax) = \RepeatInstance:: getRepeatFormInstanceMaxCount($record, $event_id, $instrument, $Proj);
-                                            if((int)$repeat_instance > $instanceMax)
-                                            {
-                                              
-                                                echo '<script type="text/javascript">removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
-                                            }
-                                        }
-
-
+                                        $lock_form = !$lock_form;
+                                        break;
                                     }
-                              }
-                        }
-                   }
+                                }
+
+
+                                //  $this->alert("search through forms" . $event_id .' '. $instrument. ' locking event='. $lock_form_events[$i][$lock]. ' form='.$lock_forms[$i][$lock]);
+                                  if ($lock_form) {
+
+                                      $isParentRepeating = $Proj->isRepeatingForm($form_events[$i], $forms[$i]) || $Proj->isRepeatingEvent($form_events[$i]) ;
+                                      // form is locked and parent form is locked, and should be readonly therefore remove the lock button  
+                                      if($this->isFormLocked($project_id, $record, $form_events[$i], $forms[$i], $repeat_instance, $isParentRepeating))
+                                      {     
+                                            if($readonly[$i])
+                                            { 
+                                                if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
+                                                {
+                                                    echo '<script type="text/javascript">removeLockControl();</script>';
+                                                }
+                                                else
+                                                {
+                                                    echo '<script type="text/javascript">removeSaveControl();</script>';
+                                                }
+                                            }
+                                            else if($lock_instances[$i] && !$this->framework->getUser()->isSuperUser())
+                                            {
+                                                $isRepeating = $Proj->isRepeatingForm($event_id, $instrument) || $Proj->isRepeatingEvent($event_id) ;
+
+                                                // if repeating event or repeating form, then make sure and not super user, make sure a new instance cannot be added
+                                                if($isRepeating)
+                                                {
+                                                    list ($instanceTotal, $instanceMax) = \RepeatInstance:: getRepeatFormInstanceMaxCount($record, $event_id, $instrument, $Proj);
+                                                    if((int)$repeat_instance > $instanceMax)
+                                                    {
+
+                                                        echo '<script type="text/javascript">removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
+                                                    }
+                                                }
+
+
+                                            }
+                                      }
+                                }
+                           }
+                       }
+                    }
                 }
             }
         }
@@ -263,107 +269,66 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         
 
         // Get all configured instrument that have locking requests when form is saved
-        for ($i = 0; $i < count($form_events); $i++)
+        if($form_events !== null)
         {
-             if ($form_events[$i] === $event_id && $forms[$i] === $instrument) {
+            for ($i = 0; $i < count($form_events); $i++)
+            {
+                 if ($form_events[$i] === $event_id && $forms[$i] === $instrument) {
 
-               
-		$data = \REDCap::getData( 'array', $record, $instrument . '_complete', $event_id) ;
-                
-                $isRepeating = $Proj->isRepeatingForm($event_id, $instrument);
-                $isRepeatingEvent =  $Proj->isRepeatingEvent($event_id);
-                $repeat_instrument = $isRepeating ? $instrument : "";
-                $dq = new \DataQuality();
-                list ($dq_errors, $dq_errors_excluded) = $dq->checkViolationsSingleRecord($record, $event_id, $instrument, array(), $repeat_instance, $repeat_instrument);
 
-                // normalise data if repeating instrument
-                  foreach ($data as $record => $event_data) {
-                        foreach ($event_data as $this_event_id => $field_data) {
-                            if ($this_event_id == 'repeat_instances') {
-                                $eventNormalized = $event_data['repeat_instances'];
-                            } 
-                        }
-                  }
-          
-                // Check that the submitted form is complete (<instrument_name>_complete == 2) and there are no data quality errors 
-                if((($isRepeating || $isRepeatingEvent) && $eventNormalized[$event_id][$repeat_instrument][$repeat_instance][$instrument . '_complete'] == '2')  
-                        || ($data[$record][$event_id][$instrument . '_complete'] == '2'))
-                {
-                    if(empty($dq_errors))
-                    {
-                        
-                        $lock_form_events = $this->getProjectSetting('lock-form-event-name', $project_id);
-                        $lock_forms = $this->getProjectSetting('lock-form-name', $project_id);
-                        $lock_form_type = $this->getProjectSetting('part-config-type', $project_id);
+                    $data = \REDCap::getData( 'array', $record, $instrument . '_complete', $event_id) ;
 
-                        // lock all the forms that requested to lock
-                        for ($lock = 0; $lock < count($lock_form_events[$i]); $lock++)
-                        {
-                            if($lock_form_type[$i][$lock] === "1")
-                            {
+                    $isRepeating = $Proj->isRepeatingForm($event_id, $instrument);
+                    $isRepeatingEvent =  $Proj->isRepeatingEvent($event_id);
+                    $repeat_instrument = $isRepeating ? $instrument : "";
+                    $dq = new \DataQuality();
+                    list ($dq_errors, $dq_errors_excluded) = $dq->checkViolationsSingleRecord($record, $event_id, $instrument, array(), $repeat_instance, $repeat_instrument);
 
-                                for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
-                                {
-                                    $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $repeat_instance, $form_events[$i], $forms[$i]);
-                                    if(!$isRepeating && !$isRepeatingEvent)
-                                    {
-                                        // check if locking form has any children to lock
-                                        $lockisRepeating = $Proj->isRepeatingForm($lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k]) ||  $Proj->isRepeatingEvent($lock_form_events[$i][$lock]);
-                                        if($lockisRepeating)
-                                        {
-                                            //  as repeating lock all instances
-                                            $form_instances = \RepeatInstance::getRepeatFormInstanceList($record, $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $Proj);
-                                            foreach ($form_instances as $instance=>$form_status) 
-                                            {
-                                                if($instance !== $repeat_instance)
-                                                {
-                                                      $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $instance, $form_events[$i], $forms[$i]);
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                   
-                                }
+                    // normalise data if repeating instrument
+                      foreach ($data as $record => $event_data) {
+                            foreach ($event_data as $this_event_id => $field_data) {
+                                if ($this_event_id == 'repeat_instances') {
+                                    $eventNormalized = $event_data['repeat_instances'];
+                                } 
                             }
-                            else if($lock_form_type[$i][$lock] === "2")
-                            {
-                                $eventForms = $Proj->eventsForms;
-		
-                                foreach ($eventForms as $this_event_id=>$these_forms) {
-                                    
-                                    if($this_event_id == $lock_form_events[$i][$lock])       
-                                    {
-                                      
-                                        foreach ($these_forms as $this_key=>$this_form) {
-                                            
-                                            $bFormFound = false;
-                                            for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
-                                            {
-                                                if($lock_forms[$i][$lock][$k] === $this_form)
-                                                {
-                                                    $bFormFound = true;
-                                                    continue;
-                                                }
-                                            }
-                                            if(!$bFormFound)
-                                            {  
-                                                $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $this_form, $repeat_instance, $form_events[$i], $forms[$i]);
-                                                if(!$isRepeating)
-                                                {
-                                                    // check if locking form has any children to lock
-                                                    $lockisRepeating = $Proj->isRepeatingForm($lock_form_events[$i][$lock], $this_form) ||  $Proj->isRepeatingEvent($lock_form_events[$i][$lock]);
-                                                    if($lockisRepeating)
-                                                    {
-                                                        //  as repeating lock all instances
-                                                        $form_instances = \RepeatInstance::getRepeatFormInstanceList($record, $lock_form_events[$i][$lock], $this_form, $Proj);
-                                                        foreach ($form_instances as $instance=>$form_status) 
-                                                        {
-                                                            if($instance !== $repeat_instance)
-                                                            {
-                                                                  $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $this_form, $instance, $form_events[$i], $forms[$i]);
+                      }
 
-                                                            }
+                    // Check that the submitted form is complete (<instrument_name>_complete == 2) and there are no data quality errors 
+                    if((($isRepeating || $isRepeatingEvent) && $eventNormalized[$event_id][$repeat_instrument][$repeat_instance][$instrument . '_complete'] == '2')  
+                            || ($data[$record][$event_id][$instrument . '_complete'] == '2'))
+                    {
+                        if(empty($dq_errors))
+                        {
+
+                            $lock_form_events = $this->getProjectSetting('lock-form-event-name', $project_id);
+                            $lock_forms = $this->getProjectSetting('lock-form-name', $project_id);
+                            $lock_form_type = $this->getProjectSetting('part-config-type', $project_id);
+
+                            // lock all the forms that requested to lock
+                            if($lock_form_events != null)
+                            {
+                                for ($lock = 0; $lock < count($lock_form_events[$i]); $lock++)
+                                {
+                                    if($lock_form_type[$i][$lock] === "1")
+                                    {
+
+                                        for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
+                                        {
+                                            $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $repeat_instance, $form_events[$i], $forms[$i]);
+                                            if(!$isRepeating && !$isRepeatingEvent)
+                                            {
+                                                // check if locking form has any children to lock
+                                                $lockisRepeating = $Proj->isRepeatingForm($lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k]) ||  $Proj->isRepeatingEvent($lock_form_events[$i][$lock]);
+                                                if($lockisRepeating)
+                                                {
+                                                    //  as repeating lock all instances
+                                                    $form_instances = \RepeatInstance::getRepeatFormInstanceList($record, $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $Proj);
+                                                    foreach ($form_instances as $instance=>$form_status) 
+                                                    {
+                                                        if($instance !== $repeat_instance)
+                                                        {
+                                                              $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $lock_forms[$i][$lock][$k], $instance, $form_events[$i], $forms[$i]);
+
                                                         }
                                                     }
                                                 }
@@ -371,24 +336,71 @@ class Locking extends \ExternalModules\AbstractExternalModule {
 
                                         }
                                     }
-					
-				}
+                                    else if($lock_form_type[$i][$lock] === "2")
+                                    {
+                                        $eventForms = $Proj->eventsForms;
+
+                                        foreach ($eventForms as $this_event_id=>$these_forms) {
+
+                                            if($this_event_id == $lock_form_events[$i][$lock])       
+                                            {
+
+                                                foreach ($these_forms as $this_key=>$this_form) {
+
+                                                    $bFormFound = false;
+                                                    for ( $k = 0; $k < count( $lock_forms[$i][$lock] ); $k++ )
+                                                    {
+                                                        if($lock_forms[$i][$lock][$k] === $this_form)
+                                                        {
+                                                            $bFormFound = true;
+                                                            continue;
+                                                        }
+                                                    }
+                                                    if(!$bFormFound)
+                                                    {  
+                                                        $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $this_form, $repeat_instance, $form_events[$i], $forms[$i]);
+                                                        if(!$isRepeating)
+                                                        {
+                                                            // check if locking form has any children to lock
+                                                            $lockisRepeating = $Proj->isRepeatingForm($lock_form_events[$i][$lock], $this_form) ||  $Proj->isRepeatingEvent($lock_form_events[$i][$lock]);
+                                                            if($lockisRepeating)
+                                                            {
+                                                                //  as repeating lock all instances
+                                                                $form_instances = \RepeatInstance::getRepeatFormInstanceList($record, $lock_form_events[$i][$lock], $this_form, $Proj);
+                                                                foreach ($form_instances as $instance=>$form_status) 
+                                                                {
+                                                                    if($instance !== $repeat_instance)
+                                                                    {
+                                                                          $this->lockForm($project_id, $record,  $lock_form_events[$i][$lock], $this_form, $instance, $form_events[$i], $forms[$i]);
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+
                             }
-                           
+                        }  
+
+                        else
+                        {
+                            // as there are data quality rule errors, set form to incomplete
+                            $inputData[$record][$event_id][$instrument . '_complete'] = 0;
+                            $result = \REDCap::saveData( 'array', $inputData, 'normal', 'YMD', 'flat', null, true );
+                            // set session varible to pop-up message box to inform user
+                            $_SESSION['module_locking_dq_errors'] = implode(",", array_merge($dq_errors, $dq_errors_excluded));
+
                         }
-                    }  
-                    
-                    else
-                    {
-                        // as there are data quality rule errors, set form to incomplete
-                        $inputData[$record][$event_id][$instrument . '_complete'] = 0;
-                        $result = \REDCap::saveData( 'array', $inputData, 'normal', 'YMD', 'flat', null, true );
-                        // set session varible to pop-up message box to inform user
-                        $_SESSION['module_locking_dq_errors'] = implode(",", array_merge($dq_errors, $dq_errors_excluded));
-  
                     }
+
                 }
-                
             }
         }
     }
@@ -464,27 +476,29 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         }
         else if (!$override_on && $intermediate_lock) {
             $lock_events = $this->getProjectSetting('inter-lock-event-name', $project_id);
-
-            for ( $i = 0; $i < count($lock_events); $i++)
+            if($lock_events != null)
             {
-
-                if($lock_events[$i] === $event_id)
+                for ( $i = 0; $i < count($lock_events); $i++)
                 {
-                    $lockform = true;
-                    $exempt_forms = $this->getProjectSetting('inter-lock-form-name', $project_id);
 
-                    for ($j = 0; $j < count($exempt_forms[$i]); $j++)
+                    if($lock_events[$i] === $event_id)
                     {
-                        if($exempt_forms[$i][$j] === $instrument)
+                        $lockform = true;
+                        $exempt_forms = $this->getProjectSetting('inter-lock-form-name', $project_id);
+
+                        for ($j = 0; $j < count($exempt_forms[$i]); $j++)
                         {
-                            $lockform = false;
-                            break;
+                            if($exempt_forms[$i][$j] === $instrument)
+                            {
+                                $lockform = false;
+                                break;
+                            }
                         }
-                    }
 
-                    if($lockform)
-                    {
-                        $locked = true;
+                        if($lockform)
+                        {
+                            $locked = true;
+                        }
 
                     }
 
@@ -508,30 +522,33 @@ class Locking extends \ExternalModules\AbstractExternalModule {
             {
                 $lockform = true;
                 $exempt_forms = $this->getProjectSetting('inter-lock-form-name', $project_id);
-
-                for ($j = 0; $j < count($exempt_forms[$i]); $j++)
+                
+                if($exempt_forms !== null)
                 {
-                   
-                      $fields = array_keys($Proj->forms[$exempt_forms[$i][$j]]['fields']);
-                    foreach($fields as $this_field)
+                    for ($j = 0; $j < count($exempt_forms[$i]); $j++)
                     {
-                        $fielddatachanges = explode("\n", $data);
-                        foreach($fielddatachanges as $fielddata)
+
+                          $fields = array_keys($Proj->forms[$exempt_forms[$i][$j]]['fields']);
+                        foreach($fields as $this_field)
                         {
-                      
-                            if(strpos($fielddata, $this_field.' ') === 0 || strpos($fielddata, $this_field.'(') === 0)
+                            $fielddatachanges = explode("\n", $data);
+                            foreach($fielddatachanges as $fielddata)
                             {
-                                $lockform = false;
+
+                                if(strpos($fielddata, $this_field.' ') === 0 || strpos($fielddata, $this_field.'(') === 0)
+                                {
+                                    $lockform = false;
+                                    break;
+                                }
+                            }
+
+                            if(!$lockform)
+                            {
                                 break;
                             }
                         }
-                        
-                        if(!$lockform)
-                        {
-                            break;
-                        }
+
                     }
-                
                 }
                 break;
             }

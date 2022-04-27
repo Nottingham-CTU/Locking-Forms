@@ -63,24 +63,47 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         }
         
         $lockText = $intermediate_lock && !$hard_lock ? "Intermediate hard lock on" : "Full Hard Lock On";
+        $locked=false;
         if(!$override_on && ($hard_lock || $intermediate_lock))
         {
-            echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
-                                       </script>';   
+             $locked=true;
         }
         else if($hard_lock || $intermediate_lock)
         {
             $lockText .= " - Override On";
-             echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
-                                       </script>';
+            $locked = true;
         }
+        
+        if($locked)
+        {
+        
+            echo   '<script type="text/javascript">   
+                    // Single global scope object containing all variables/functions
+                    var LockInfo = {};
+                    LockInfo.setInfoText = function(txt) {
+                        LockInfo.textvar = txt;
+                    };
+ 
+                    LockInfo.getInfoText = function() {
+                    return this.textvar;
+                    };LockInfo.setInfoText("'.$lockText.'");
+                                       </script>';   
+            if((str_contains(PAGE_FULL, "record_status_dashboard.php") || str_contains(PAGE_FULL, "record_home.php")))
+            {
+                 echo   '<script type="text/javascript">' . 
+                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
+                                       </script>';   
+            }
+                                       
+        }
+        
     }
 
 
     function redcap_data_entry_form( $project_id, $record, $instrument, $event_id, $group_id,  $repeat_instance)
     {
+        // add delay so all the modules are comleted, so buttons can be removed after they created
+        $this->delayModuleExecution();
           // if there are data quality rule errors, then pop a message to notify user form has been reset to incomplete
         if(isset($_SESSION['module_locking_dq_errors']))
         { 
@@ -98,12 +121,12 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
             {
-                echo   '<script type="text/javascript">removeLockControl();</script>';
+                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeLockControl();</script>';
             }
             else
             {
             
-                echo   '<script type="text/javascript">removeSaveControl();</script>';              
+                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl();</script>';              
             }              
         }
        
@@ -165,11 +188,11 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                             { 
                                                 if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
                                                 {
-                                                    echo '<script type="text/javascript">removeLockControl();</script>';
+                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeLockControl();</script>';
                                                 }
                                                 else
                                                 {
-                                                    echo '<script type="text/javascript">removeSaveControl();</script>';
+                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl();</script>';
                                                 }
                                             }
                                             else if($lock_instances[$i] && !$this->framework->getUser()->isSuperUser())
@@ -183,7 +206,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                                     if((int)$repeat_instance > $instanceMax)
                                                     {
 
-                                                        echo '<script type="text/javascript">removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
+                                                        echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
                                                     }
                                                 }
 

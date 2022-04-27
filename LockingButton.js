@@ -4,14 +4,14 @@
  * and open the template in the editor.
  */
 
-  // Single global scope object containing all variables/functions
-  var LockInfo = {};
-  LockInfo.setInfoText = function(txt) {
-       LockInfo.textvar = txt;
+
+  
+  LockInfo.setLocked = function() {
+       LockInfo.locked = true;
   };
  
-  LockInfo.getInfoText = function() {
-     return this.textvar;
+  LockInfo.getLocked = function() {
+     return this.locked;
   };
  
 function removeLockControl()
@@ -67,6 +67,7 @@ function addLockBanner()
 
 function removeSaveControl(locktext = '<b>Data hard locked</b>')
 {
+    LockInfo.setLocked();
     var vListButton = $('button'); 
     var bAddSaveText = true;
     
@@ -143,22 +144,23 @@ function removeSaveControl(locktext = '<b>Data hard locked</b>')
         else if(vSaveBtn.getAttribute('title') == lang.data_entry_287)
         {
             bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
-        }
-       
-        
+        } 
     }
+    
+   
     var vListLinks = $('.deletedoc-lnk'); 
     for (var i = 0; i < vListLinks.length; i++)
     {
         vLink = vListLinks[i];
-        
-        if (vLink.innerText.trim() == lang.form_renderer_24)
+        if (vLink.innerText.trim() == lang.form_renderer_43)
         { 
             removeButton(vLink, false, locktext); 
  
         }
     }
-      
+    
+   var vLetterGenerator = $('#gen_letter'); 
+   vLetterGenerator.remove();   
 }
 
 function removeButton(vSaveBtn, bAddSaveText, locktext)
@@ -172,16 +174,24 @@ function removeButton(vSaveBtn, bAddSaveText, locktext)
     return bAddSaveText
 }
 
-// remove ranodise button if it exists
+
 $(document).ready(function(){
    
-    var vButton = $('#redcapRandomizeBtn'); 
-    if(vButton != null)
-    {
-        vButton.remove();
+   // remove randomise button if it exists
+   if(LockInfo.getLocked() == true)
+   {
+        var vButton = $('#redcapRandomizeBtn');
+        if(vButton != null)
+        {
+            vButton.remove(); 
+            
+        }
+      
+        removeSaveControl();
     }
     removeAddRecord();
-    addLockBanner();
+    
+   addLockBanner();
     
     
  });

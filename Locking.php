@@ -26,7 +26,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                    "HARD LOCK VIOLATION ON ".\REDCap::getProjectTitle(), "Data cannot be updated as form has a hard lock - Project=".\REDCap::getProjectTitle()."(".$project_id.") User=".$GLOBALS['userid']." Record Id=".$_POST[\REDCap::getRecordIdField()]." Form=".$_GET['page']." Event Id=".$_GET['event_id']." Instance=".$_GET['instance'] );
 
                 echo "This data cannot be updated as the data on this form <b>HARD</b> locked.<br>";
-                echo " <a href='".PAGE_FULL."?pid=".$project_id."&page=".$_GET['page']."&event_id=".$_GET['event_id']."&id=".$_POST[\REDCap::getRecordIdField()]."&instance=".$_GET[htmlspecialchars( 'instance', ENT_QUOTES )]."'>Return to form</a>";
+                echo " <a href='".PAGE_FULL."?pid=".$project_id."&page=".$_GET['page']."&event_id=".$_GET['event_id']."&id=".$_POST[\REDCap::getRecordIdField()]."&instance=".htmlspecialchars($_GET['instance'], ENT_QUOTES )."'>Return to form</a>";
                 $this->exitAfterHook();
             }
         }

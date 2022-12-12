@@ -26,7 +26,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                    "HARD LOCK VIOLATION ON ".\REDCap::getProjectTitle(), "Data cannot be updated as form has a hard lock - Project=".\REDCap::getProjectTitle()."(".$project_id.") User=".$GLOBALS['userid']." Record Id=".$_POST[\REDCap::getRecordIdField()]." Form=".$_GET['page']." Event Id=".$_GET['event_id']." Instance=".$_GET['instance'] );
 
                 echo "This data cannot be updated as the data on this form <b>HARD</b> locked.<br>";
-                echo " <a href='".PAGE_FULL."?pid=".$project_id."&page=".$_GET['page']."&event_id=".$_GET['event_id']."&id=".$_POST[\REDCap::getRecordIdField()]."&instance=".$_GET['instance']."'>Return to form</a>";
+                echo " <a href='".htmlspecialchars(PAGE_FULL, ENT_QUOTES )."?pid=".htmlspecialchars($project_id, ENT_QUOTES )."&page=".htmlspecialchars($_GET['page'], ENT_QUOTES )."&event_id=".htmlspecialchars($_GET['event_id'], ENT_QUOTES )."&id=".htmlspecialchars($_POST[\REDCap::getRecordIdField()], ENT_QUOTES )."&instance=".htmlspecialchars($_GET['instance'], ENT_QUOTES )."'>Return to form</a>";
                 $this->exitAfterHook();
             }
         }
@@ -432,17 +432,20 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     private function isFormLocked($project_id, $record, $event_id, $instrument, $instance, $check_instance = true)
             
     {
-        $sql = "select timestamp from redcap_locking_data where project_id = $project_id and event_id = $event_id
-					and form_name = '".$instrument."' and record = '" . $record."'";
+        $sql = "select timestamp from redcap_locking_data where project_id = ? and event_id = ?
+					and form_name = ? and record = ?";
         
         
         if($check_instance === true)
         {
-            $sql .= " and instance = '".$instance."'";
+            $sql .= " and instance = ?";
+            $q = $this->query($sql,[$project_id, $event_id, $instrument, $record, $instance]);
         }
-     
-        $q = db_query($sql);
-       
+        else 
+        { 
+             $q = $this->query($sql,[$project_id, $event_id, $instrument, $record]); 
+        }
+           
         if (db_num_rows($q) > 0)
         {
            return  true;  
@@ -456,12 +459,10 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         if(!$this->isFormLocked($project_id, $record, $event_id, $instrument, $instance))
         {
             $sql = "insert into redcap_locking_data (project_id, record, event_id, form_name, username, timestamp, instance)
-                                                    values ($project_id, '" . $record . "', " . $event_id . ",
-                                                    '" . $instrument. "', '" . USERID . "', '".NOW."', " . checkNull($instance) . ")";
+                                                    values (?, ?, ?,?,?,?,?)";
             $description = "Action: Locking Instrument\nEvent: ".$event_id. "\nInstrument: " .$instrument. "\nInstance: ".checkNull($instance)."\nSaving Event - ".$save_event_id. "\nSaving instrument: " .$save_instrument;
-
-
-             if (db_query($sql))
+            
+             if ($this->query($sql, [$project_id, $record, $event_id, $instrument, USERID, NOW, $instance]))
             {
                 \REDCap::logEvent("Locking Instrument", $description, "LOCK_RECORD", $record, "",  $project_id);
             }
@@ -632,14 +633,14 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                     $lasttimeint = preg_replace('/[^\d]/', '', $lasttime);
                     $sql = "SELECT DATE_FORMAT(timestamp(log.ts), '%d-%m-%Y %H:%i:%s') as ts, log.ip, log.user, log.event_id, log.pk, log.data_values ".
                              " FROM $logEventTable log ".
-                             " WHERE log.project_id = $project_id AND (log.event = 'INSERT' " .
+                             " WHERE log.project_id = ? AND (log.event = 'INSERT' " .
                              " OR log.event = 'UPDATE' OR log.event='DELETE' OR log.event='DOC_DELETE') ".
-                             " AND log.object_type = 'redcap_data' AND log.ts >= $lasttimeint" .
+                             " AND log.object_type = 'redcap_data' AND log.ts >= ?" .
                              " ORDER BY log.log_event_id";
 
-                    $params = [$project_id];
+                    $params = [$project_id, $lasttimeint];
 
-                    $query = db_query($sql);
+                    $query = $this->query($sql, $params);
                     
                     $it_inbox = 'ms-nctu-it@exmail.nottingham.ac.uk';
                     global $project_contact_email;
@@ -648,13 +649,13 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                         $it_inbox = $project_contact_email;
                     }
                     
-                    if (db_num_rows($query) > 0)
+                    if ($query->num_rows > 0)
                     {
                         $Proj = $this->framework->getProject($project_id);
                         $violations = "";
 
                         $rowcount = 0;
-                        while ($row = db_fetch_assoc($query)) {
+                        while ($row = $query->fetch_assoc()) {
                             
                             // if intermedicate lock need to check if update is allowed or not
                             if($full_lock || (!$full_lock && $intermediate_lock && $this->reportLogEvent($row['event_id'], $row['data_values'], $project_id)))
@@ -681,6 +682,6 @@ class Locking extends \ExternalModules\AbstractExternalModule {
             }
        }
     }
-                    
+                
 
 }

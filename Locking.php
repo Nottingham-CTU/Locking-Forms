@@ -79,19 +79,19 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         
             echo   '<script type="text/javascript">   
                     // Single global scope object containing all variables/functions
-                    var LockInfo = {};
-                    LockInfo.setInfoText = function(txt) {
-                        LockInfo.textvar = txt;
+                    var NottinghamLockInfo = {};
+                    NottinghamLockInfo.setInfoText = function(txt) {
+                        NottinghamLockInfo.textvar = txt;
                     };
  
-                    LockInfo.getInfoText = function() {
+                    NottinghamLockInfo.getInfoText = function() {
                     return this.textvar;
-                    };LockInfo.setInfoText("'.$lockText.'");
+                    };NottinghamLockInfo.setInfoText("'.$lockText.'");
                                        </script>';   
             if((str_contains(PAGE_FULL, "record_status_dashboard.php") || str_contains(PAGE_FULL, "record_home.php")))
             {
                  echo   '<script type="text/javascript">' . 
-                                           $this->loadFile("LockingButton.js") .'LockInfo.setInfoText("'.$lockText.'");
+                                           $this->loadFile("LockingButton.js") .'NottinghamLockInfo.setInfoText("'.$lockText.'");
                                        </script>';   
             }
                                        

@@ -6,11 +6,11 @@
 
 
   
-  LockInfo.setLocked = function() {
-       LockInfo.locked = true;
+  NottinghamLockInfo.setLocked = function() {
+       NottinghamLockInfo.locked = true;
   };
  
-  LockInfo.getLocked = function() {
+  NottinghamLockInfo.getLocked = function() {
      return this.locked;
   };
  
@@ -58,7 +58,7 @@ function addLockBanner()
         vLockBanner = document.createElement( 'div' );
         vLockBanner.id ="nctu_locking_banner"
         vLockBanner.style = 'color:blue;';
-        vLockBanner.innerHTML = LockInfo.getInfoText();
+        vLockBanner.innerHTML = NottinghamLockInfo.getInfoText();
         vHeader.appendChild( vLockBanner );
     }
     
@@ -67,7 +67,7 @@ function addLockBanner()
 
 function removeSaveControl(locktext = '<b>Data hard locked</b>')
 {
-    LockInfo.setLocked();
+    NottinghamLockInfo.setLocked();
     var vListButton = $('button'); 
     var bAddSaveText = true;
     
@@ -178,7 +178,7 @@ function removeButton(vSaveBtn, bAddSaveText, locktext)
 $(document).ready(function(){
    
    // remove randomise button if it exists
-   if(LockInfo.getLocked() == true)
+   if(NottinghamLockInfo.getLocked() == true)
    {
         var vButton = $('#redcapRandomizeBtn');
         if(vButton != null)

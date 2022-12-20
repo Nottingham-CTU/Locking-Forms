@@ -121,12 +121,12 @@ class Locking extends \ExternalModules\AbstractExternalModule {
         {
             if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
             {
-                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeLockControl();</script>';
+                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'nottinghamRemoveLockControl();</script>';
             }
             else
             {
             
-                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl();</script>';              
+                echo   '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'nottinghamRemoveSaveControl();</script>';              
             }              
         }
        
@@ -188,11 +188,11 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                             { 
                                                 if($this->isFormLocked($project_id, $record, $event_id, $instrument, $repeat_instance))
                                                 {
-                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeLockControl();</script>';
+                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'nottinghamRemoveLockControl();</script>';
                                                 }
                                                 else
                                                 {
-                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl();</script>';
+                                                    echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'nottinghamRemoveSaveControl();</script>';
                                                 }
                                             }
                                             else if($lock_instances[$i] && !$this->framework->getUser()->isSuperUser())
@@ -206,7 +206,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                                                     if((int)$repeat_instance > $instanceMax)
                                                     {
 
-                                                        echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'removeSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
+                                                        echo '<script type="text/javascript">'. $this->loadFile("LockingButton.js") .'nottinghamRemoveSaveControl("New instance cannot be added,<br>please contact administrator.");</script>';
                                                     }
                                                 }
 

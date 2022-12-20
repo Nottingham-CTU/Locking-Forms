@@ -14,9 +14,9 @@
      return this.locked;
   };
  
-function removeLockControl()
+function nottinghamRemoveLockControl()
 {
-    removeSaveControl();
+    nottinghamRemoveSaveControl();
     var vListButton = $('input[type=button],button');
     for (var i = 0; i < vListButton.length; i++)
     {
@@ -30,7 +30,7 @@ function removeLockControl()
     }  
 }
 
-function removeAddRecord()
+function nottinghamRemoveAddRecord()
 {
     var vListButton = $('button');
     
@@ -48,7 +48,7 @@ function removeAddRecord()
     }  
 }
 
-function addLockBanner()
+function nottinghamAddLockBanner()
 {  
     var vHeader = document.getElementById("subheaderDiv2");
     var vLockBanner = document.getElementById("nctu_locking_banner");
@@ -65,7 +65,7 @@ function addLockBanner()
   
 }
 
-function removeSaveControl(locktext = '<b>Data hard locked</b>')
+function nottinghamRemoveSaveControl(locktext = '<b>Data hard locked</b>')
 {
     NottinghamLockInfo.setLocked();
     var vListButton = $('button'); 
@@ -76,74 +76,74 @@ function removeSaveControl(locktext = '<b>Data hard locked</b>')
         vSaveBtn = vListButton[i]; 
         if (vSaveBtn.innerText.trim() == lang.data_entry_288)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
  
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_409)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
         }
         else if (vSaveBtn.innerText.trim()== lang.data_entry_275)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);  
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);  
         }
          else if (vSaveBtn.innerText.trim()== lang.data_entry_276)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);  
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);  
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_210)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext); 
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext); 
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_210)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext); 
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext); 
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_212)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext); 
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext); 
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_215)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext); 
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext); 
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_410)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext); 
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext); 
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_292)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
         }
         else if(vSaveBtn.innerText.trim() == lang.data_entry_289)
         {
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
         }
         else if (vSaveBtn.innerText.trim() == lang.data_entry_234)
         { 
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
                
         } 
         else if (vSaveBtn.innerText.trim() == "Send SMS")
         { 
-           removeButton(vSaveBtn, false, locktext);      
+           nottinghamRemoveButton(vSaveBtn, false, locktext);      
         }
         else if (vSaveBtn.innerText.trim() == "Send Email")
         { 
-            removeButton(vSaveBtn, false, locktext);  
+            nottinghamRemoveButton(vSaveBtn, false, locktext);  
         }
         else if (vSaveBtn.innerText.trim() == lang.emlang_minimization_rando)
         { 
-            removeButton(vSaveBtn, false, locktext);    
+            nottinghamRemoveButton(vSaveBtn, false, locktext);    
         }
        
         else if (vSaveBtn.innerText.trim() == "Generate Letter")
         { 
-            removeButton(vSaveBtn, false, locktext); 
+            nottinghamRemoveButton(vSaveBtn, false, locktext); 
         }
         else if(vSaveBtn.getAttribute('title') == lang.data_entry_287)
         {
-            bAddSaveText = removeButton(vSaveBtn, bAddSaveText, locktext);
+            bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
         } 
     }
     
@@ -154,7 +154,7 @@ function removeSaveControl(locktext = '<b>Data hard locked</b>')
         vLink = vListLinks[i];
         if (vLink.innerText.trim() == lang.form_renderer_43)
         { 
-            removeButton(vLink, false, locktext); 
+            nottinghamRemoveButton(vLink, false, locktext); 
  
         }
     }
@@ -163,7 +163,7 @@ function removeSaveControl(locktext = '<b>Data hard locked</b>')
    vLetterGenerator.remove();   
 }
 
-function removeButton(vSaveBtn, bAddSaveText, locktext)
+function nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext)
 {
     if(bAddSaveText)
     {
@@ -187,11 +187,11 @@ $(document).ready(function(){
             
         }
       
-        removeSaveControl();
+        nottinghamRemoveSaveControl();
     }
-    removeAddRecord();
+    nottinghamRemoveAddRecord();
     
-   addLockBanner();
+   nottinghamAddLockBanner();
     
     
  });

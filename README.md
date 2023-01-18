@@ -6,7 +6,7 @@ This REDCap module provides functionality to lock forms on saving.
 
 This module provides project-level configuration options, which are only visible to users with designer privileges.
 
-Settings for Hard locking
+###Settings for Hard locking
 * Full Hard Lock (only available for administrators(super users) to remove unlock and any save options for a form and options to add a new record.
 * Intermediate Hard Lock (only available for administrators(super users) to remove unlock and any save options for a form and options to add a new record.
 define all events and instrument that is EXEMPT in the event that should no longer editable
@@ -14,7 +14,27 @@ define all events and instrument that is EXEMPT in the event that should no long
 	* Instrument EXEMPT in event
 * Override Hard Lock	 (only available for administrators(super users) to override the removal of unlock button for administrators(super users) ONLY)
 
-Settings for Locking Instruments when saving a form with completed status:
+Other modules can find out if forms are hard locked by calling Locking Forms module, to stop any module updates to the database.
+<br>The follow details are required:
+* **event_id** int, The event ID number of the current data entry form, in which the event_id corresponds to a defined event in a longitudinal project. For classic projects, there will only ever be one event_id for the project.
+* **instrument** string, The name of the current data collection instrument (i.e., the unique name, not the instrument label). 
+
+#### Example usage
+
+```php
+if ( $this->isModuleEnabled('locking_forms') )
+{
+
+    $Locking = \ExternalModules\ExternalModules::getModuleInstance('locking_forms');
+    if($Locking->isHardLocked($event_id, $instrument))
+    {
+
+        // add custom code related to modules to disable/hide links and fields if the database is hard locked
+    }
+}
+```
+
+### Settings for Locking Instruments when saving a form with completed status:
 * Event name of saved instrument
 * Saved instrument
 * Do not allow new instances (only available for administrators(super users) to remove save options so new instance of repeating form or event cannot be added. The saved instrument must be locked).

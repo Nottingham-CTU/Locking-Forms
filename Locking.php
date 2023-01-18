@@ -476,7 +476,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
   
     }
     
-    private function isHardLocked($event_id, $instrument)
+    public function isHardLocked($event_id, $instrument)
     {
         $hard_lock = $this->getProjectSetting('full-lock', $project_id);
         $override = $this->getProjectSetting('override', $project_id);

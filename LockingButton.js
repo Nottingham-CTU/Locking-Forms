@@ -124,14 +124,11 @@ function nottinghamRemoveSaveControl(locktext = '<b>Data hard locked</b>')
             bAddSaveText = nottinghamRemoveButton(vSaveBtn, bAddSaveText, locktext);
                
         } 
-        else if (vSaveBtn.innerText.trim() == "Send SMS")
+        else if (vSaveBtn.name == "nctu-alert-button")
         { 
            nottinghamRemoveButton(vSaveBtn, false, locktext);      
         }
-        else if (vSaveBtn.innerText.trim() == "Send Email")
-        { 
-            nottinghamRemoveButton(vSaveBtn, false, locktext);  
-        }
+        
         else if (vSaveBtn.innerText.trim() == lang.emlang_minimization_rando)
         { 
             nottinghamRemoveButton(vSaveBtn, false, locktext);    
@@ -148,11 +145,22 @@ function nottinghamRemoveSaveControl(locktext = '<b>Data hard locked</b>')
     }
     
    
-    var vListLinks = $('.deletedoc-lnk'); 
+    var vListLinks = $('.deletedoc-lnk');  
     for (var i = 0; i < vListLinks.length; i++)
     {
         vLink = vListLinks[i];
-        if (vLink.innerText.trim() == lang.form_renderer_43)
+        if (vLink.innerText.trim() == lang.form_renderer_23 || vLink.innerText.trim() == lang.form_renderer_24 || vLink.innerText.trim() == lang.form_renderer_31 || vLink.innerText.trim() == lang.form_renderer_43 || vLink.innerText.trim() == lang.data_entry_459)
+        { 
+            nottinghamRemoveButton(vLink, false, locktext); 
+ 
+        }
+    }
+    
+    var vListLinks = $('.fileuploadlink'); 
+    for (var i = 0; i < vListLinks.length; i++)
+    {
+        vLink = vListLinks[i];
+        if (vLink.innerText.trim() == lang.form_renderer_23 || vLink.innerText.trim() == lang.form_renderer_24 || vLink.innerText.trim() == lang.form_renderer_31 || vLink.innerText.trim() == lang.form_renderer_43 || vLink.innerText.trim() == lang.data_entry_459)
         { 
             nottinghamRemoveButton(vLink, false, locktext); 
  

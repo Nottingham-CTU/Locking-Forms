@@ -115,7 +115,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
       
         global $Proj;
         global $lang;
-        addLangToJS(array('data_entry_182', 'data_entry_210', 'data_entry_212', 'data_entry_215', 'data_entry_234', 'data_entry_275', 'data_entry_275', 'data_entry_276', 'data_entry_287', 'data_entry_288', 'data_entry_289', 'data_entry_292', 'data_entry_409', 'data_entry_410', 'emlang_minimization_rando', 'form_renderer_24'));
+        addLangToJS(array('data_entry_182', 'data_entry_210', 'data_entry_212', 'data_entry_215', 'data_entry_234', 'data_entry_275', 'data_entry_275', 'data_entry_276', 'data_entry_287', 'data_entry_288', 'data_entry_289', 'data_entry_292', 'data_entry_409', 'data_entry_410', 'emlang_minimization_rando', 'form_renderer_24',   'form_renderer_23', 'form_renderer_31', 'form_renderer_43', 'data_entry_459'));
       
         if($locked)
         {

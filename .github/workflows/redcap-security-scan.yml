@@ -14,8 +14,8 @@ on:
         required: false
       RC_SYSTEM_HOOKS:
         type: boolean
-        default: false
-        required: false
+        default: true
+        required: true
     secrets:
       RC_COMMUNITY_PASSWORD:
         required: true

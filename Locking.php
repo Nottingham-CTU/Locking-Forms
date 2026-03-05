@@ -226,13 +226,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     function validateSettings( $settings )
     {
-        if ($this->getProjectID() === null)
-        {
-                return null;
-        }
-
-
-        $errMsg = "";
+         $errMsg = "";
         if($settings['configure-locking'] === true)
         {
             for ( $i = 0; $i < count( $settings['form-event-name'] ); $i++ )
@@ -241,10 +235,10 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                 {
                     $errMsg .= "\n- Saving instrument event or form " . ($i+1) . ": is missing";
                 }
-
+                
                 for ( $j = 0; $j < count( $settings['lock-form-event-name'][$i] ); $j++ )
                 {
-
+                    
                     if($settings['part-config-type'][$i][$j] === "1")
                     {
 
@@ -259,7 +253,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                     }
                 }
             }
-
+		
         }
         else
         {
@@ -270,7 +264,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                     $errMsg .= "\n- Saving instrument event or form " . ($i+1) . ": should not be defined as locking is not checked";
                 }
             }
-
+		
         }
         if($errMsg !== '')
         {
@@ -541,6 +535,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     private function reportLogEvent($event_id, $data, $project_id)
     {
+  //       \REDCap::email('nina.clayton@nottingham.ac.uk', 'nina.clayton@nottingham.ac.uk', 'locking', 'reportlogevent');
         $lock_events = $this->getProjectSetting('inter-lock-event-name', $project_id);
         $Proj = new \Project($project_id);
 
@@ -591,30 +586,20 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     function redcap_module_save_configuration($project_id)
     {
-        try
+         $full_lock = $this->getProjectSetting('full-lock', $project_id);
+        $intermediate_lock = $this->getProjectSetting('intermediate-lock', $project_id);
+        
+        $config = $this->getProjectSetting( "hard-lock-ts", $project_id);
+        if($config == null && ($full_lock || $intermediate_lock))
         {
-            if($project_id)
-            {
-                $full_lock = $this->getProjectSetting('full-lock', $project_id);
-                $intermediate_lock = $this->getProjectSetting('intermediate-lock', $project_id);
-
-                $config = $this->getProjectSetting( "hard-lock-ts", $project_id);
-                if($config == null && ($full_lock || $intermediate_lock))
-                {
-                    $this->setProjectSetting( "hard-lock-ts", date("Y-m-d H:i:s"), $project_id);
-                } 
-                if($config != null && !$full_lock && !$intermediate_lock)
-                {
-                    $this->removeProjectSetting("hard-lock-ts", $project_id);
-                }
-                $lasttime = $this->getProjectSetting( "hard-lock-ts", $project_id);
-                
-            }
+            $this->setProjectSetting( "hard-lock-ts", date("Y-m-d H:i:s"), $project_id);
+        } 
+        if($config != null && !$full_lock && !$intermediate_lock)
+        {
+            $this->removeProjectSetting("hard-lock-ts", $project_id);
         }
-        catch(\Exception $ex)
-        {
-            
-        }    
+         $lasttime = $this->getProjectSetting( "hard-lock-ts", $project_id);
+         
     }
     
     private function loadFile($filename) {

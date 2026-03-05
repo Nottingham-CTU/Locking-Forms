@@ -226,7 +226,12 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     function validateSettings( $settings )
     {
-         $errMsg = "";
+        // return for EM system settings as no validation required.
+        if($this->getProjectId() === null)
+        {
+            return null;
+        }
+        $errMsg = "";
         if($settings['configure-locking'] === true)
         {
             for ( $i = 0; $i < count( $settings['form-event-name'] ); $i++ )
@@ -586,20 +591,30 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     function redcap_module_save_configuration($project_id)
     {
-         $full_lock = $this->getProjectSetting('full-lock', $project_id);
-        $intermediate_lock = $this->getProjectSetting('intermediate-lock', $project_id);
-        
-        $config = $this->getProjectSetting( "hard-lock-ts", $project_id);
-        if($config == null && ($full_lock || $intermediate_lock))
+        try
         {
-            $this->setProjectSetting( "hard-lock-ts", date("Y-m-d H:i:s"), $project_id);
-        } 
-        if($config != null && !$full_lock && !$intermediate_lock)
-        {
-            $this->removeProjectSetting("hard-lock-ts", $project_id);
+            if($project_id !== null)
+            {
+            
+                $full_lock = $this->getProjectSetting('full-lock', $project_id);
+                $intermediate_lock = $this->getProjectSetting('intermediate-lock', $project_id);
+
+                $config = $this->getProjectSetting( "hard-lock-ts", $project_id);
+                if($config == null && ($full_lock || $intermediate_lock))
+                {
+                    $this->setProjectSetting( "hard-lock-ts", date("Y-m-d H:i:s"), $project_id);
+                } 
+                if($config != null && !$full_lock && !$intermediate_lock)
+                {
+                    $this->removeProjectSetting("hard-lock-ts", $project_id);
+                }
+                 $lasttime = $this->getProjectSetting( "hard-lock-ts", $project_id);
+            }
         }
-         $lasttime = $this->getProjectSetting( "hard-lock-ts", $project_id);
-         
+        catch(\Exception $ex)
+        {
+        }
+            
     }
     
     private function loadFile($filename) {

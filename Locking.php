@@ -591,6 +591,7 @@ class Locking extends \ExternalModules\AbstractExternalModule {
     
     function redcap_module_save_configuration($project_id)
     {
+        // added a try catch as causes an expecition when called when saving external module system configuration
         try
         {
             if($project_id !== null)
@@ -608,7 +609,6 @@ class Locking extends \ExternalModules\AbstractExternalModule {
                 {
                     $this->removeProjectSetting("hard-lock-ts", $project_id);
                 }
-                 $lasttime = $this->getProjectSetting( "hard-lock-ts", $project_id);
             }
         }
         catch(\Exception $ex)

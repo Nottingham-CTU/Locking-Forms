@@ -188,7 +188,7 @@ $(document).ready(function(){
    // remove randomise button if it exists
    if(NottinghamLockInfo.getLocked() == true)
    {
-        var vButton = $('#redcapRandomizeBtn');
+        var vButton = $('[id^="redcapRandomizeBtn"');
         if(vButton != null)
         {
             vButton.remove(); 
